@@ -133,3 +133,25 @@ footer > * {
 }
 
 /* Add your styles here */
+/* Styles for login page */
+.auth-form {
+  border-radius: 5px;
+  min-width: 500px;
+  max-width: 800px;
+  width: 80%;
+  margin: 20px auto;
+  padding: 0;
+}
+input[type=text], input[type=password] ,button[value=Submit] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.error-message {
+  color: red;
+  font-size: var(--body-text-size)
+}
