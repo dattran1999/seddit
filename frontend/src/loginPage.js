@@ -39,6 +39,7 @@ export default function renderLoginPage(apiUrl) {
                 // TODO: fetch posts of the user
                 const token = res.token;
                 console.log(token);
+                localStorage.setItem('sedditToken', token);
                 renderNewsFeed(apiUrl, token);
             })
             .catch(res => {

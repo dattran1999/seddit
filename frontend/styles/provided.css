@@ -54,6 +54,7 @@ footer {
   height: 40px;
   background-color: var(--reddit-orange);
   border-radius: 50%;
+  cursor: pointer;
 }
 
 input {
@@ -154,4 +155,23 @@ input[type=text], input[type=password], input[type=email], button[value=Submit] 
 .error-message {
   color: red;
   font-size: var(--body-text-size)
+}
+
+.modal {
+  display: block; /*TODO:change to none*/
+  position: fixed;
+  z-index: 200;
+  top: 40%;
+  left: 40%;
+  width: 20%;
+  background: white;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.4);
+  padding: 1rem;
+}
+.blur {
+  -webkit-filter: blur(1px);
+  -moz-filter: blur(1px);
+  -o-filter: blur(1px);
+  -ms-filter: blur(1px);
+  filter: blur(1px);
 }
