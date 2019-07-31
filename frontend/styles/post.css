@@ -9,6 +9,7 @@
 
 .post .vote {
   width: 45px;
+  display: inline-block;
   background-color: var(--reddit-light-grey);
 }
 
@@ -28,14 +29,18 @@
 }
 
 .vote-button {
-  display: inline-block;
-  width: 100%;
+  /* display: inline-flex; */
+  width: 45px;
   height: 25px;
   text-align: center;
   cursor: pointer;
   background-position: 0 -25px;
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+.fa-angle-up {
+  margin-top: 10px;
 }
 
 .vote-count {

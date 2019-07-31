@@ -26,7 +26,7 @@ function initApp(apiUrl) {
         renderLoginPage(apiUrl);
     });
     signupButton.addEventListener('click', (e) => {
-        renderSignupPage();
+        renderSignupPage(apiUrl);
     });
 
 }

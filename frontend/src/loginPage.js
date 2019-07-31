@@ -1,4 +1,5 @@
 import {addChildrenToElement, createInput, createNewElement} from './utils.js'
+import renderNewsFeed from './newsFeed.js';
 
 export default function renderLoginPage(apiUrl) {
     let mainContent = document.getElementsByTagName('main')[0];
@@ -10,7 +11,7 @@ export default function renderLoginPage(apiUrl) {
     // create input fields
     let usernameInput = createInput('text', 'username', 'Enter Username');
     let passwordInput = createInput('password', 'password', 'Enter Password');
-    let submitButton = createNewElement('button', {'value': 'Submit', "class": 'button button-secondary'}, 'SUBMIT')
+    let submitButton = createNewElement('button', {'value': 'Submit', "class": 'button button-secondary'}, 'LOGIN')
     
     // put all input into the form
     addChildrenToElement(loginForm, usernameInput, passwordInput, submitButton);
@@ -19,26 +20,33 @@ export default function renderLoginPage(apiUrl) {
     submitButton.addEventListener('click', (e) => {
         e.preventDefault()
         const option = {
+            method: "POST",
             body: `{ "username": "${usernameInput.value}", "password": "${passwordInput.value}"}`,
             headers: {
-                "Accept": "application/json",
+                "accept": "application/json",
                 "Content-Type": "application/json"
             },
-            method: "POST"
         }
         fetch(`${apiUrl}/auth/login`, option)
             .then(res => {
-                if (res !== 200) {
+                console.log(res)
+                if (res.status !== 200) {
                     throw Error('Wrong username or password')
                 }
-                res.json()
-            })
-            .catch(res => {
-                let errorMsg = createNewElement('p', {"class": 'error-message'}, res)
-                loginForm.insertBefore(errorMsg, loginForm.childNodes[2]);
+                return res.json();
             })
             .then(res => {
                 // TODO: fetch posts of the user
+                const token = res.token;
+                console.log(token);
+                renderNewsFeed(apiUrl, token);
+            })
+            .catch(res => {
+                const error = document.getElementsByClassName("error-message");
+                if (Array.from(error).length === 0) {
+                    let errorMsg = createNewElement('p', {"class": 'error-message'}, res)
+                    loginForm.insertBefore(errorMsg, loginForm.childNodes[2]);
+                }
             })
     })
 }

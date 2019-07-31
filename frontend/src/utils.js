@@ -20,6 +20,8 @@ export function createNewElement(type, attributes, innertext) {
     for (const key of Object.keys(attributes)) {
         element.setAttribute(key, attributes[key])
     }
+    if (innertext === undefined) 
+        innertext = "";
     element.innerText = innertext;
     return element;
 }

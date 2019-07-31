@@ -142,7 +142,7 @@ footer > * {
   margin: 20px auto;
   padding: 0;
 }
-input[type=text], input[type=password] ,button[value=Submit] {
+input[type=text], input[type=password], input[type=email], button[value=Submit] {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
