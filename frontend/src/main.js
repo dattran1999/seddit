@@ -13,8 +13,6 @@ import {addChildrenToElement} from './utils.js'
 // this will allow us to verify your apps behaviour with 
 // different datasets.
 function initApp(apiUrl) {
-    // renderLoginPage(apiUrl);
-    // addVotingIcons();
     renderNewsFeed(apiUrl);
     const logo = document.getElementById('logo');
     const loginButton = document.querySelector('button[data-id-login]');
@@ -28,7 +26,6 @@ function initApp(apiUrl) {
     signupButton.addEventListener('click', (e) => {
         renderSignupPage(apiUrl);
     });
-
 }
 
 export default initApp;
