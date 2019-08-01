@@ -1,6 +1,6 @@
 import API_URL from "../backend_url.js";
 import {createNewElement} from '../utils.js';
-
+// TODO: error if not logged in
 // create modal showing people who liked the post
 export default function createLikeModal(postId) {
     let modalDiv = createNewElement('div', {"class": "modal", "data-modal-id": postId});

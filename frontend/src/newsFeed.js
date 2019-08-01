@@ -1,5 +1,6 @@
 import {createNewElement, addChildrenToElement} from './utils.js'
 import createLikeModal from "./components/likeModal.js"
+import createCommentModal from "./components/commentModal.js"
 
 export default function renderNewsFeed(apiUrl, token) {
     // fetch posts TODO: check if token is empty
@@ -58,8 +59,27 @@ function createPost(postInfo) {
         {"data-id-author": `${postInfo.meta.author}`, "class": "post-author"}, 
         `Posted by @${postInfo.meta.author} in r/${postInfo.meta.subseddit}`
     );
+    // FIXME: quick and dirty TODO: add button
+    textContent.addEventListener('click', () => {
+        // blur background
+        let root = document.getElementById('root');
+        root.classList.add('blur')
+        // let modal = document.querySelector(`[data-modal-id="${postId}"]`);
+        // if (modal === null) {
+            // create modal if not yet created
+            let modal = createCommentModal(postInfo.id);
+            let body = document.getElementsByTagName('body')[0]
+            body.appendChild(modal);
+        // }
+        // else display modal
+        modal.style.display = 'block';
+    });
+    let image = document.createElement('img');
+    if (postInfo.thumbnail !== null) {
+        image = createNewElement('img', {"src": `data:image/jpeg;base64, ${postInfo.thumbnail}`});
+    }
     // add content to content div
-    addChildrenToElement(content, header, textContent, author);
+    addChildrenToElement(content, header, textContent, image, author);
     post.appendChild(voteDiv);
     post.appendChild(content);
     return post;

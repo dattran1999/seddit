@@ -167,6 +167,7 @@ input[type=text], input[type=password], input[type=email], button[value=Submit] 
   background: white;
   box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.4);
   padding: 1rem;
+  overflow: scroll;
 }
 .blur {
   -webkit-filter: blur(1px);
@@ -174,4 +175,5 @@ input[type=text], input[type=password], input[type=email], button[value=Submit] 
   -o-filter: blur(1px);
   -ms-filter: blur(1px);
   filter: blur(1px);
+  overflow: hidden;
 }
