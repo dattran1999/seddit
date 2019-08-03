@@ -3,7 +3,7 @@ import {createNewElement} from '../utils.js';
 
 // create modal showing people who liked the post
 export default function createCommentModal(postId) {
-    let modalDiv = createNewElement('div', {"class": "modal", "data-modal-id": postId});
+    let modalDiv = createNewElement('div', {"class": "modal", "data-comment-modal-id": postId});
     let closeButton = createNewElement('button', {"class": "button-secondary"}, "Close");
     modalDiv.appendChild(closeButton);
     closeButton.addEventListener('click', () => {
@@ -21,11 +21,17 @@ export default function createCommentModal(postId) {
     console.log(fetchOption);
     
     fetch(`${API_URL}/post?id=${postId}`, fetchOption)
-        .then(res => res.json())
+        .then(res => {
+            if (res.status === 200) return res.json();
+            else throw Error();
+        })
         .then(jsonRes => {
             let comments = Array.from(jsonRes.comments)
             modalDiv.appendChild(createComments(comments))
-            console.log(modalDiv)
+        })
+        .catch(() => {
+            let errorMsg = createNewElement('p', {"class": "error-message"}, "You need to log in to view likes")
+            modalDiv.appendChild(errorMsg)
         })
     return modalDiv;
 }

@@ -29,7 +29,6 @@
 }
 
 .vote-button {
-  /* display: inline-flex; */
   width: 45px;
   height: 25px;
   text-align: center;
@@ -37,6 +36,17 @@
   background-position: 0 -25px;
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+.fa-comment {
+  width: 45px;
+  height: 25px;
+  text-align: center;
+  cursor: pointer;
+  background-position: 0 -25px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  cursor: pointer;  
 }
 
 .fa-angle-up {
@@ -49,4 +59,10 @@
   text-align: center;
   margin-top: 0px;
   margin-bottom: 0px;
+  cursor: pointer;
+}
+
+.liked {
+  color:#0079D3;
+  text-shadow: 0 0 3px #0079A0;
 }

@@ -84,7 +84,8 @@ def gen_passwd():
     p = ""
     for _ in range(rand(6,10)):
         p += choice(string.ascii_lowercase+string.digits)
-    return p
+    # TODO: change back to return p
+    return "user"
 
 BACKEND_URL_JS_FILE = 'src/backend_url.js'
 

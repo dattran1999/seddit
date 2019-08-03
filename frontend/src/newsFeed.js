@@ -1,9 +1,29 @@
-import {createNewElement, addChildrenToElement} from './utils.js'
+import {createNewElement, addChildrenToElement, getUserId} from './utils.js'
 import createLikeModal from "./components/likeModal.js"
 import createCommentModal from "./components/commentModal.js"
+import API_URL from './backend_url.js'
 
-export default function renderNewsFeed(apiUrl, token) {
-    // fetch posts TODO: check if token is empty
+class State {
+    constructor() {
+        // userLiked is an object showing if a user has liked a post
+        // maping the postId to boolean
+        this.userLiked = {}
+        this.id = null;
+    }
+    async init() {
+        this.id = await getUserId();
+    }
+    updateState(postId) {
+        this.userLiked.postId = !this.userLiked.postId
+    }
+}
+
+let state = new State();
+
+export default async function renderNewsFeed(apiUrl, token) {
+    await state.init();
+ 
+    // fetch posts
     let fetchUrl = `${apiUrl}/post/public`;
     let option = {
         method: "GET"
@@ -15,17 +35,14 @@ export default function renderNewsFeed(apiUrl, token) {
         }
         fetchUrl = `${apiUrl}/user/feed`
     }
-    console.log(option)
     fetch(fetchUrl, option)
         .then(res => {
             if (res.status !== 200) {
-                // TODO: error handling
                 console.log("error", res.status)
             }
             return res.json();
         })
         .then(res => {
-            console.log(res)
             let postList = createNewElement('p', {}, "Your feed is empty");
             if (res.posts.length > 0) {
                 postList = createPostList(res.posts);
@@ -34,16 +51,21 @@ export default function renderNewsFeed(apiUrl, token) {
             mainContent.innerText = "";
             mainContent.appendChild(postList);
         })
+        // if error in fetching post, get public posts
+        .catch(() => renderNewsFeed(apiUrl))
 }
-
+// TODO: maybe split this functions into files
 function createPostList(posts) {
     // ul element contains all posts
     let postList = createNewElement('ul', {"id": "feed", "data-id-feed": ""});
     posts.forEach(post => {
+        // check if user has liked the post
+        updateState(post);
         // create li element for each post
         let child = createPost(post);
         postList.appendChild(child);
     });
+    console.log(state);
     return postList;
 }
 
@@ -59,21 +81,6 @@ function createPost(postInfo) {
         {"data-id-author": `${postInfo.meta.author}`, "class": "post-author"}, 
         `Posted by @${postInfo.meta.author} in r/${postInfo.meta.subseddit}`
     );
-    // FIXME: quick and dirty TODO: add button
-    textContent.addEventListener('click', () => {
-        // blur background
-        let root = document.getElementById('root');
-        root.classList.add('blur')
-        // let modal = document.querySelector(`[data-modal-id="${postId}"]`);
-        // if (modal === null) {
-            // create modal if not yet created
-            let modal = createCommentModal(postInfo.id);
-            let body = document.getElementsByTagName('body')[0]
-            body.appendChild(modal);
-        // }
-        // else display modal
-        modal.style.display = 'block';
-    });
     let image = document.createElement('img');
     if (postInfo.thumbnail !== null) {
         image = createNewElement('img', {"src": `data:image/jpeg;base64, ${postInfo.thumbnail}`});
@@ -86,9 +93,15 @@ function createPost(postInfo) {
 }
 
 function createVotingDiv(postId, numVotes) {
-    let voteDiv = createNewElement('div', {"class": "vote", "data-id-upvotes": numVotes});
+    let voteDiv = createNewElement('div', {"class": "vote", "data-id-upvotes": postId});
+    // these buttons are from font awesome https://fontawesome.com
     let upvoteButton = createNewElement('i', {"class": "fas fa-angle-up vote-button"});
+    if (state.userLiked[`${postId}`]) {
+        upvoteButton.classList.add('liked');
+    }
     let downvoteButton = createNewElement('i', {"class": "fas fa-angle-down vote-button"});
+    let commentButton = createNewElement('i', {"class": "far fa-comment"});
+    
     let voteCount = createNewElement('p', {"class": "vote-count", "data-id-upvotes": numVotes}, numVotes);
 
     voteCount.addEventListener('click', () => {
@@ -96,17 +109,69 @@ function createVotingDiv(postId, numVotes) {
         let root = document.getElementById('root');
         root.classList.add('blur')
         
-        let modal = document.querySelector(`[data-modal-id="${postId}"]`);
-        if (modal === null) {
-            // create modal if not yet created
-            modal = createLikeModal(postId);
-            let body = document.getElementsByTagName('body')[0]
-            body.appendChild(modal);
-        }
-        // else display modal
+        let modal = createLikeModal(postId);
+        let body = document.getElementsByTagName('body')[0]
+        body.appendChild(modal);
         modal.style.display = 'block';
     });
 
-    addChildrenToElement(voteDiv, upvoteButton, voteCount, downvoteButton);
+    commentButton.addEventListener('click', () => {
+        // blur background
+        let root = document.getElementById('root');
+        root.classList.add('blur')
+        // create modal and append to body
+        let modal = createCommentModal(postId);
+        let body = document.getElementsByTagName('body')[0]
+        body.appendChild(modal);
+        modal.style.display = 'block';
+    });
+
+    upvoteButton.addEventListener('click', () => {
+        postLike(postId, voteCount, upvoteButton)
+    })
+
+    addChildrenToElement(voteDiv, upvoteButton, voteCount, downvoteButton, commentButton);
     return voteDiv;
+}
+
+async function postLike(postId, voteCountElement, upvoteButton) {
+    // if user havent liked the content before
+    let fetchOption = {
+        headers: {
+            Accept: "application/json",
+            Authorization: `Token ${localStorage.getItem('sedditToken')}`
+        }
+    }
+    if (!state.userLiked[`${postId}`]) {
+        fetchOption.method = "PUT";
+        voteCountElement.innerText = Number(voteCountElement.innerText) + 1;
+        upvoteButton.classList.add('liked');
+        console.log("like");    
+    } else {
+        fetchOption.method = "DELETE";
+        voteCountElement.innerText = Number(voteCountElement.innerText) - 1;
+        upvoteButton.classList.remove('liked');
+        console.log("delete");
+    }
+    state.userLiked[`${postId}`] = !state.userLiked[`${postId}`];
+    try {
+        const response = await fetch(`${API_URL}/post/vote?id=${postId}`, fetchOption);
+        if (response.status !== 200) {
+            throw Error();
+        }
+        const json = await response.json();
+        console.log(json);
+    }
+    catch (error) {
+        // TODO: showing error message...
+        console.log("error occured");
+    }
+}
+
+function updateState(postInfo) {     
+    if (postInfo.meta.upvotes.includes(state.id)) {
+        state.userLiked[`${postInfo.id}`] = true;
+    } else {
+        state.userLiked[`${postInfo.id}`] = false;
+    }
 }

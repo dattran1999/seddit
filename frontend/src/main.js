@@ -17,13 +17,13 @@ function initApp(apiUrl) {
     const logo = document.getElementById('logo');
     const loginButton = document.querySelector('button[data-id-login]');
     const signupButton = document.querySelector('button[data-id-signup]');
-    logo.addEventListener('click', (e) => {
+    logo.addEventListener('click', () => {
         renderNewsFeed(apiUrl);
     });
-    loginButton.addEventListener('click', (e) => {
+    loginButton.addEventListener('click', () => {
         renderLoginPage(apiUrl);
     });
-    signupButton.addEventListener('click', (e) => {
+    signupButton.addEventListener('click', () => {
         renderSignupPage(apiUrl);
     });
 }
