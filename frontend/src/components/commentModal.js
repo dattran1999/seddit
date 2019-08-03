@@ -1,18 +1,12 @@
 import API_URL from "../backend_url.js";
 import {createNewElement} from '../utils.js';
+import createModal from "./baseModal.js";
 
 // create modal showing people who liked the post
 export default function createCommentModal(postId) {
-    let modalDiv = createNewElement('div', {"class": "modal", "data-comment-modal-id": postId});
-    let closeButton = createNewElement('button', {"class": "button-secondary"}, "Close");
-    modalDiv.appendChild(closeButton);
-    closeButton.addEventListener('click', () => {
-        modalDiv.style.display = 'none';
-        let root = document.getElementById('root');
-        root.classList.remove('blur');
-        let body = document.getElementsByTagName('body')[0];
-        body.setAttribute('style', 'overflow: auto');
-    })
+    let modalDiv = createModal();
+    modalDiv.setAttribute("data-comment-modal-id", postId)
+    console.log(modalDiv)
     const fetchOption = {
         method: "GET",
         headers: {

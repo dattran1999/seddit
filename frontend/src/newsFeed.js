@@ -1,6 +1,7 @@
 import {createNewElement, addChildrenToElement, getUserId} from './utils.js'
 import createLikeModal from "./components/likeModal.js"
 import createCommentModal from "./components/commentModal.js"
+import createPostModal from "./components/postModal.js"
 import API_URL from './backend_url.js'
 
 class State {
@@ -13,16 +14,14 @@ class State {
     async init() {
         this.id = await getUserId();
     }
-    updateState(postId) {
-        this.userLiked.postId = !this.userLiked.postId
-    }
 }
 
 let state = new State();
 
 export default async function renderNewsFeed(apiUrl, token) {
+    // get id of current user and store in state
     await state.init();
- 
+
     // fetch posts
     let fetchUrl = `${apiUrl}/post/public`;
     let option = {
@@ -56,8 +55,31 @@ export default async function renderNewsFeed(apiUrl, token) {
 }
 // TODO: maybe split this functions into files
 function createPostList(posts) {
-    // ul element contains all posts
+    // ul element contains all posts + header
     let postList = createNewElement('ul', {"id": "feed", "data-id-feed": ""});
+    // feed header div
+    let feedHeaderDiv = createNewElement('div', {"class": "feed-header"});
+    let feedTitle = createNewElement('h3', {'class': 'feed-title alt-text'}, "Popular posts");
+    let postButton = createNewElement('button', {"class": "button button-secondary", "id": "post-button"}, "Post");
+    if (posts.length > 0) {
+        feedTitle.innerText = "Your Posts"
+    }
+    addChildrenToElement(feedHeaderDiv, feedTitle, postButton);
+    postList.appendChild(feedHeaderDiv);
+
+    postButton.addEventListener('click', () => {
+        // blur background
+        let root = document.getElementById('root');
+        root.classList.add('blur');
+        // create modal and append to body
+        let modal = createPostModal();
+        let body = document.getElementsByTagName('body')[0];
+        body.setAttribute('style', 'overflow: hidden');        
+        body.appendChild(modal);
+        modal.style.display = 'block';
+    })
+
+    // posts 
     posts.forEach(post => {
         // check if user has liked the post
         updateState(post);
@@ -107,10 +129,11 @@ function createVotingDiv(postId, numVotes) {
     voteCount.addEventListener('click', () => {
         // blur background
         let root = document.getElementById('root');
-        root.classList.add('blur')
-        
+        root.classList.add('blur');
+        // create modal and append to body
         let modal = createLikeModal(postId);
-        let body = document.getElementsByTagName('body')[0]
+        let body = document.getElementsByTagName('body')[0];
+        body.setAttribute('style', 'overflow: hidden');        
         body.appendChild(modal);
         modal.style.display = 'block';
     });

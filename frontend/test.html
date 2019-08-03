@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" onchange="encodeImageFileAsURL(this)" />
+    <script>
+    let string = "this is a test"
+    console.log(string.replace(/^.* is /, ''))
+    function encodeImageFileAsURL(element) {
+        var file = element.files[0];
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            let imageBase64 = reader.result;
+            console.log(imageBase64[0])
+             // remove the data type e.g. data:image/jpeg;base64,
+            console.log(imageBase64.replace(/^data.*base64,/, ''))
+        }
+        reader.readAsDataURL(file);
+    }
+    </script>
+</body>
+</html>

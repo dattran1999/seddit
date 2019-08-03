@@ -1,16 +1,11 @@
 import API_URL from "../backend_url.js";
 import {createNewElement} from '../utils.js';
-// TODO: error if not logged in
+import createModal from "./baseModal.js";
+
 // create modal showing people who liked the post
 export default function createLikeModal(postId) {
-    let modalDiv = createNewElement('div', {"class": "modal", "data-like-modal-id": postId});
-    let closeButton = createNewElement('button', {"class": "button-secondary"}, "Close");
-    modalDiv.appendChild(closeButton);
-    closeButton.addEventListener('click', () => {
-        modalDiv.style.display = 'none';
-        let root = document.getElementById('root');
-        root.classList.remove('blur')
-    })
+    let modalDiv = createModal();
+    modalDiv.setAttribute("data-like-modal-id", postId)
     const fetchOption = {
         method: "GET",
         headers: {
