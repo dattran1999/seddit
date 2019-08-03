@@ -118,10 +118,11 @@ function createVotingDiv(postId, numVotes) {
     commentButton.addEventListener('click', () => {
         // blur background
         let root = document.getElementById('root');
-        root.classList.add('blur')
+        root.classList.add('blur');
         // create modal and append to body
         let modal = createCommentModal(postId);
-        let body = document.getElementsByTagName('body')[0]
+        let body = document.getElementsByTagName('body')[0];
+        body.setAttribute('style', 'overflow: hidden');        
         body.appendChild(modal);
         modal.style.display = 'block';
     });

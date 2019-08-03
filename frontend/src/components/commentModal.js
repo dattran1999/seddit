@@ -9,7 +9,9 @@ export default function createCommentModal(postId) {
     closeButton.addEventListener('click', () => {
         modalDiv.style.display = 'none';
         let root = document.getElementById('root');
-        root.classList.remove('blur')
+        root.classList.remove('blur');
+        let body = document.getElementsByTagName('body')[0];
+        body.setAttribute('style', 'overflow: auto');
     })
     const fetchOption = {
         method: "GET",

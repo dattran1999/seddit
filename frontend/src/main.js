@@ -13,12 +13,16 @@ import {addChildrenToElement} from './utils.js'
 // this will allow us to verify your apps behaviour with 
 // different datasets.
 function initApp(apiUrl) {
-    renderNewsFeed(apiUrl);
+    const token = localStorage.getItem('sedditToken');
+    if (token === null) renderNewsFeed(apiUrl);
+    else renderNewsFeed(apiUrl, token);
     const logo = document.getElementById('logo');
     const loginButton = document.querySelector('button[data-id-login]');
     const signupButton = document.querySelector('button[data-id-signup]');
     logo.addEventListener('click', () => {
-        renderNewsFeed(apiUrl);
+        const token = localStorage.getItem('sedditToken');
+        if (token === null) renderNewsFeed(apiUrl);
+        else renderNewsFeed(apiUrl, token);
     });
     loginButton.addEventListener('click', () => {
         renderLoginPage(apiUrl);

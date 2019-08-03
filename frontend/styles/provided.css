@@ -160,14 +160,15 @@ input[type=text], input[type=password], input[type=email], button[value=Submit] 
 .modal {
   display: block; /*TODO:change to none*/
   position: fixed;
-  z-index: 200;
+  overflow-y: auto;
+  /* z-index: 200; */
+  transition: opacity 0.3s ease-in;
   top: 40%;
   left: 40%;
   width: 20%;
   background: white;
   box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.4);
   padding: 1rem;
-  overflow: scroll;
 }
 .blur {
   -webkit-filter: blur(1px);
