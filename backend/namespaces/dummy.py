@@ -66,7 +66,6 @@ class Dummy_Post(Resource):
         u_username = u[1]
         if not j or not id:
             abort(400, 'Malformed request')
-        print(id)
         id = int(id)
         if not db.exists('POST').where(id=id):
             abort(400, 'Malformed request')
@@ -76,7 +75,7 @@ class Dummy_Post(Resource):
             # exposing what post id's are valid and unvalid
             # may be a security issue lol
             abort(403, 'You Are Unauthorized To Edit That Post')
-        (desc,src) = unpack(j,'description_text','src',required=False)
+        (title,desc,src) = unpack(j,'title','description_text','src',required=False)
         if desc == None and src == None:
             abort(400, 'Malformed Request')
         updated = {}
@@ -84,6 +83,8 @@ class Dummy_Post(Resource):
             updated['description'] = desc
         if src:
             updated['src'] = src
+        if title:
+            updated['title'] = title
         db.update('POST').set(**updated).where(id=id).execute()
         return {
             'message': 'success'
@@ -175,11 +176,9 @@ class Vote(Resource):
             abort(400, 'Malformed request')
         p = db.select('POST').where(id=id).execute()
         votes = text_list_to_set(p[5],process_f=lambda x: int(x))
-        print('votes: {}'.format(votes))
         if not u[0] in votes:
             abort(400, 'Malformed request')
         votes.discard(u[0])
-        print('votes: {}'.format(votes))
         votes = set_to_text_list(votes)
         db.update('POST').set(likes=votes).where(id=id).execute()
         return {
@@ -301,7 +300,7 @@ class Feed(Resource):
         following.append(p)
         all_posts = db.raw(q,following)
         all_posts = [format_post(row) for row in all_posts]
-        all_posts.sort(reverse=True,key=lambda x: int(x["meta"]["published"]))
+        all_posts.sort(reverse=True,key=lambda x: int(float(x["meta"]["published"])))
         return {
             'posts': all_posts
         }
