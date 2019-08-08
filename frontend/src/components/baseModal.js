@@ -1,16 +1,42 @@
 import {createNewElement} from '../utils.js';
 
 // template to create modal
-export default function createModal() {
+export default function createModal(type, postId) {
+    // attempt to get the model if created and clear data inside
+    let modalDiv;
+    if (type === 'post') {
+        modalDiv = document.querySelector(`.modal[data-post]`);
+    } else if (type === 'comment') {
+        modalDiv = document.querySelector(`.modal[data-comment-modal-id="${postId}"]`);
+    } else if (type === 'like') {
+        modalDiv = document.querySelector(`.modal[data-like-modal-id="${postId}"]`);
+    }
+    // if the modal is not yet created
+    if (modalDiv === undefined || modalDiv === null) {
+        modalDiv = createNewModal(type, postId)
+    }
+    return modalDiv;
+}
+
+function createNewModal(type, postId) {
     let modalDiv = createNewElement('div', {"class": "modal"});
-    let closeButton = createNewElement('button', {"class": "button-secondary"}, "Close");
-    modalDiv.appendChild(closeButton);
-    closeButton.addEventListener('click', () => {
-        modalDiv.style.display = 'none';
-        let root = document.getElementById('root');
-        root.classList.remove('blur');
-        let body = document.getElementsByTagName('body')[0];
-        body.setAttribute('style', 'overflow: auto');
-    });
+        if (type === 'like') {
+            modalDiv.setAttribute("data-like-modal-id", postId);
+        } else if (type === 'comment') {
+            modalDiv.setAttribute("data-comment-modal-id", postId);
+        } else if (type === 'post') {
+            modalDiv.setAttribute("data-post", "")
+        }
+        let closeButton = createNewElement('i', {"class": "fa fa-window-close"});
+        modalDiv.appendChild(closeButton);
+        let contentDiv = createNewElement('div', {"class": "modal-content"});
+        modalDiv.appendChild(contentDiv)
+        closeButton.addEventListener('click', () => {
+            modalDiv.style.display = 'none';
+            let root = document.getElementById('root');
+            root.classList.remove('blur');
+            let body = document.getElementsByTagName('body')[0];
+            body.setAttribute('style', 'overflow: auto');
+        });
     return modalDiv;
 }

@@ -1,12 +1,15 @@
 import API_URL from "../backend_url.js";
-import {createNewElement} from '../utils.js';
+import {createNewElement, addChildrenToElement} from '../utils.js';
 import createModal from "./baseModal.js";
 
 // create modal showing people who liked the post
-export default function createCommentModal(postId) {
-    let modalDiv = createModal();
-    modalDiv.setAttribute("data-comment-modal-id", postId)
-    console.log(modalDiv)
+export default async function createCommentModal(postId) {
+    let modalDiv = createModal('comment', postId);
+    let modalConentDiv = modalDiv.getElementsByClassName("modal-content")[0];
+    while (modalConentDiv.firstChild) {
+        modalConentDiv.removeChild(modalConentDiv.firstChild);
+    }
+    console.log('fetching comments')
     const fetchOption = {
         method: "GET",
         headers: {
@@ -14,21 +17,19 @@ export default function createCommentModal(postId) {
             Authorization: `Token ${localStorage.getItem('sedditToken')}`
         }
     }
-    console.log(fetchOption);
-    
-    fetch(`${API_URL}/post?id=${postId}`, fetchOption)
-        .then(res => {
-            if (res.status === 200) return res.json();
-            else throw Error();
-        })
-        .then(jsonRes => {
-            let comments = Array.from(jsonRes.comments)
-            modalDiv.appendChild(createComments(comments))
-        })
-        .catch(() => {
-            let errorMsg = createNewElement('p', {"class": "error-message"}, "You need to log in to view likes")
-            modalDiv.appendChild(errorMsg)
-        })
+    try {
+        const res = await fetch(`${API_URL}/post?id=${postId}`, fetchOption);
+        const json = await res.json();
+        if (res.status !== 200) throw Error(json.message);
+        let comments = Array.from(json.comments);
+        modalConentDiv.appendChild(createCommentForm(postId));
+        modalConentDiv.appendChild(createComments(comments));
+    }
+    catch (error){
+        console.log(error)
+        let errorMsg = createNewElement('p', {"class": "error-message"}, "You need to log in to view likes")
+        modalConentDiv.appendChild(errorMsg);
+    }
     return modalDiv;
 }
 
@@ -47,4 +48,38 @@ function createComments(comments) {
         commentList.appendChild(commentDiv);
     });
     return commentList;
+}
+
+function createCommentForm(postId) {
+    // comment input
+    let commentForm = createNewElement('form', {"class": "post-form"});
+    let commentInput = createNewElement("textarea", {"rows": "4", "cols": "20", "placeholder": "Enter Comment"});
+    let submitButton = createNewElement('button', {'value': 'Submit', "class": 'button button-secondary'}, 'POST');
+
+    submitButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+        console.log(commentInput.value)
+        const fetchOption = {
+            method: "PUT",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Token ${localStorage.getItem('sedditToken')}`,
+                "Content-Type": "application/json"
+            },
+            body: `{
+                "comment": "${commentInput.value}"
+            }`,
+        }
+        try {
+            const res = await fetch(`${API_URL}/post/comment?id=${String(postId)}`, fetchOption);
+            const json = await res.json();
+            if (res.status !== 200) throw Error(json.message);
+            createCommentModal(postId);
+        } catch(error) {
+            // TODO: show error msg
+            console.log(error)
+        }
+    })
+    addChildrenToElement(commentForm, commentInput, submitButton);
+    return commentForm;
 }

@@ -2,19 +2,15 @@ import createModal from "./baseModal.js";
 import { createInput, createNewElement, addChildrenToElement } from '../utils.js'
 import API_URL from '../backend_url.js'
 export default function createPostModal() {
-    let modalDiv = createModal();
+    let modalDiv = createModal('post');
+    let modalConentDiv = modalDiv.getElementsByClassName("modal-content")[0];
     let form = createPostForm();
-    modalDiv.appendChild(form);
-    console.log(modalDiv)
+    modalConentDiv.appendChild(form);
     return modalDiv;
 }
 function createPostForm() {
     let form = createNewElement('form', {"class": "post-form"})
 
-    // let titlePrompt = createNewElement('label', {"for": "email"});
-    // let textPrompt = createNewElement('label', {"for": "text"});
-    // let imagePrompt = createNewElement('label', {"for": "image"});
-    // let subsedditPrompt = createNewElement('label', {"for": "subseddit"});
     let titlePrompt = createNewElement('b', {}, "Title");
     let textPrompt = createNewElement('b', {}, "Text");
     let imagePrompt = createNewElement('b', {}, "Image");

@@ -4,8 +4,11 @@ import createModal from "./baseModal.js";
 
 // create modal showing people who liked the post
 export default function createLikeModal(postId) {
-    let modalDiv = createModal();
-    modalDiv.setAttribute("data-like-modal-id", postId)
+    let modalDiv = createModal('like', postId);
+    let modalConentDiv = modalDiv.getElementsByClassName("modal-content")[0];
+    while (modalConentDiv.firstChild) {
+        modalConentDiv.removeChild(modalConentDiv.firstChild);
+    }
     const fetchOption = {
         method: "GET",
         headers: {
@@ -13,7 +16,6 @@ export default function createLikeModal(postId) {
             Authorization: `Token ${localStorage.getItem('sedditToken')}`
         }
     }
-    console.log(fetchOption);
     
     fetch(`${API_URL}/post?id=${postId}`, fetchOption)
         .then(res => {
@@ -24,13 +26,12 @@ export default function createLikeModal(postId) {
             }
         })
         .then(res => {
-            console.log(res)
             let upvoteList = Array.from(res.meta.upvotes);
-            modalDiv.appendChild(usersUpvoted(upvoteList));
+            modalConentDiv.appendChild(usersUpvoted(upvoteList));
         })
         .catch(() => {
             let errorMsg = createNewElement('p', {"class": "error-message"}, "You need to log in to view likes")
-            modalDiv.appendChild(errorMsg)
+            modalConentDiv.appendChild(errorMsg)
         })
     return modalDiv;
 }
@@ -51,7 +52,6 @@ function usersUpvoted(userIds) {
             .then(res => {
                 user.innerText = res.username;
                 userList.appendChild(user);
-                console.log(res.username)
             })
     });
     return userList;
