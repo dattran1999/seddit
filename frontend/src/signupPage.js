@@ -1,7 +1,7 @@
 import {addChildrenToElement, createInput, createNewElement} from './utils.js'
-import renderNewsFeed from './newsFeed.js';
+import renderLoginPage from './loginPage.js';
 
-export default function renderLoginPage(apiUrl) {
+export default function renderSignupPage(apiUrl) {
     let mainContent = document.getElementsByTagName('main')[0];
     mainContent.innerText = "";
     // create login form, with a div wrapped around it
@@ -21,6 +21,7 @@ export default function renderLoginPage(apiUrl) {
 
     submitButton.addEventListener('click', (e) => {
         e.preventDefault()
+        // TODO: rewrite the fetch using async to simplify code      
         const option = {
             body: JSON.stringify({ 
                 "username": `${usernameInput.value}`, 
@@ -36,7 +37,6 @@ export default function renderLoginPage(apiUrl) {
         }
         fetch(`${apiUrl}/auth/signup`, option)
             .then(res => {
-                console.log(res)
                 if (res.status === 409 || res.status === 400) {
                     res.json()
                         .then(jsonRes => {
@@ -55,9 +55,8 @@ export default function renderLoginPage(apiUrl) {
                     res.json().then(res => {
                         // TODO: fetch posts of the user
                         const token = res.token;
-                        console.log(token);
                         localStorage.setItem('sedditToken', token);
-                        renderNewsFeed(apiUrl, token);
+                        renderLoginPage(apiUrl);
                     })
                 }
             })

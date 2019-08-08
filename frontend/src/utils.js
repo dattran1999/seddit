@@ -28,9 +28,7 @@ export function createNewElement(type, attributes, innertext) {
     return element;
 }
 // get user id assuming user has logged in
-export async function getUserId() { 
-    console.log("function called");
-    
+export async function getUserId() {     
     const fetchOption = {
         method: "GET",
         headers: {

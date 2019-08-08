@@ -1,5 +1,6 @@
 import {addChildrenToElement, createInput, createNewElement} from './utils.js'
 import renderNewsFeed from './newsFeed.js';
+import renderNavBar from './components/navbar.js'
 
 export default function renderLoginPage(apiUrl) {
     let mainContent = document.getElementsByTagName('main')[0];
@@ -7,7 +8,7 @@ export default function renderLoginPage(apiUrl) {
     // create login form, with a div wrapped around it
     let loginForm = document.createElement('form');
     loginForm.classList.add("auth-form")
-    
+    renderNavBar();
     // create input fields
     let usernameInput = createInput('text', 'username', 'Enter Username');
     let passwordInput = createInput('password', 'password', 'Enter Password');
@@ -40,7 +41,9 @@ export default function renderLoginPage(apiUrl) {
                 const token = res.token;
                 console.log(token);
                 localStorage.setItem('sedditToken', token);
-                renderNewsFeed(apiUrl, token);
+                // renderNavBar();
+                // renderNewsFeed(apiUrl, token);
+                return true;
             })
             .catch(res => {
                 const error = document.getElementsByClassName("error-message");
