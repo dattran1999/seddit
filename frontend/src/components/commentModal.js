@@ -73,7 +73,11 @@ function createCommentForm(postId) {
             createCommentModal(postId);
         } catch(error) {
             // TODO: show error msg
-            console.log(error)
+            let errorMsg = document.getElementsByClassName("error-message")[0];
+            if (errorMsg === undefined) {
+                errorMsg = createNewElement('p', {"class": 'error-message'}, "Error: Please Enter your comment")
+                commentForm.insertBefore(errorMsg, submitButton);
+            }
         }
     })
     addChildrenToElement(commentForm, commentInput, submitButton);

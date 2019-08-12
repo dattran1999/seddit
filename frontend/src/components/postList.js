@@ -87,7 +87,8 @@ function createPost(postInfo) {
         modal.style.display = 'block';
     })
     let image = document.createElement('img');
-    if (postInfo.thumbnail !== null) {
+    // only add image to the post if it has one
+    if (postInfo.thumbnail !== null && postInfo.thumbnail !== '') {
         image = createNewElement('img', {"src": `data:image/jpeg;base64, ${postInfo.thumbnail}`});
     }
     // add content to content div

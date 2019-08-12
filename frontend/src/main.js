@@ -42,10 +42,17 @@ function initApp(apiUrl) {
 
 function createTemplateHtml() {
     const root = document.getElementById('root');
-    root.appendChild(createHeaderHtml());
-    let main = createNewElement('main', {"role": 'main'})
-    root.appendChild(main);
-    console.log(root)
+    let header = document.getElementById('nav');
+    console.log(header)
+    if (header === null) {
+        root.appendChild(createHeaderHtml());
+    }
+    let main = document.getElementsByTagName('main')[0];
+    console.log(main)
+    if (main === undefined) {
+        main = createNewElement('main', {"role": 'main'})
+        root.appendChild(main);
+    }
 }
 
 function createHeaderHtml() {

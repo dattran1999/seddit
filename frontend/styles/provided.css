@@ -214,9 +214,6 @@ input:not([type=search]), button[value=Submit], textarea{
   display: inline;
   padding-right: 20px;
 }
-.fa-pen{
-  cursor: pointer;
-}
 
 .modal .fa-window-close {
   position: fixed;
@@ -227,4 +224,15 @@ input:not([type=search]), button[value=Submit], textarea{
 }
 .toggle {
   display: none;
+}
+.clickable {
+  cursor: pointer;
+}
+.action {
+  margin: auto 10px;  
+}
+.flex-right {
+  display: flex;
+  float: right;
+  right: 0%;
 }

@@ -3,6 +3,7 @@ import API_URL from './backend_url.js';
 import renderEditProfilePage from "./editProfilePage.js"
 import createPostList from './components/postList.js'
 import createProfilePageModal from './components/profilePageModal.js';
+import createPostModal from './components/postModal.js';
 
 // TODO: button to render this page
 export default async function renderProfilePage() {    
@@ -17,7 +18,6 @@ export default async function renderProfilePage() {
     try {
         const res = await fetch(`${API_URL}/user`, fetchOption);
         const json = await res.json();
-        console.log(json)
         if (res.status !== 200) {
             throw Error(json.message)
         }
@@ -26,26 +26,26 @@ export default async function renderProfilePage() {
         while(mainContent.firstChild) {
             mainContent.removeChild(mainContent.firstChild)
         }
-        // add elements to page
+
+        // div: showing username and edit profile button
         let profileDiv = createNewElement('div', {"class": "profile-content"})
         let usernameDiv = createNewElement('div', {"class": "profile"});
         let username = createNewElement('h1', {"class": "username"}, json.username);
         // from awesome fonts
-        let editProfileButton = createNewElement('i', {"class": "fas fa-pen", "id": "edit-profile-button"});
+        let editProfileButton = createNewElement('i', {"class": "fas fa-pen clickable", "id": "edit-profile-button"});
         // redirect to modify user info page if click
         editProfileButton.addEventListener("click", () => {
             renderEditProfilePage()
         })
         addChildrenToElement(usernameDiv, username, editProfileButton);
 
+        // div: showing user info in followers and following
         let metaDiv = createNewElement('div', {"class": "user-meta"});        
         let numPost = createNewElement('p', {}, `${json.posts.length} posts `);
-        let numFollowing = createNewElement('p', {}, `${json.following.length} following`);
+        let numFollowing = createNewElement('p', {"class": "clickable"}, `${json.following.length} following`);
         let numFollowed = createNewElement('p', {}, `${json.followed_num} follwers`);
         addChildrenToElement(metaDiv, numPost, numFollowed, numFollowing);
 
-        // TODO: maybe add the posts of user (use the function createPost in postList.js)
-        // let posts = await createPosts(json.posts);
         let followingDiv = createNewElement('div', {"class": "toggle"});
         json.following.forEach(async userId => {
             const info = await userInfo(userId)
@@ -59,7 +59,14 @@ export default async function renderProfilePage() {
                 followingDiv.classList.add("toggle")
             }
         })
-        addChildrenToElement(profileDiv, usernameDiv, metaDiv, followingDiv);
+
+        // div: posts of user 
+        let postDiv = createNewElement('div', {})
+        let postHeader = createNewElement('h3', {"class": "feed-title flex-center"}, "My Posts");
+        let posts = await createPosts(json.posts);
+        addChildrenToElement(postDiv, postHeader, posts)
+        
+        addChildrenToElement(profileDiv, usernameDiv, metaDiv, followingDiv, postDiv);
         mainContent.appendChild(profileDiv);
     } catch(error) {
         // TODO: show error message
@@ -67,13 +74,64 @@ export default async function renderProfilePage() {
     }
 }
 
-// async function createPost(postIds) {
-//     // create json of posts and pass in the json (similar to feed format)
-//     let json = {"posts": []};
-//     postIds.forEach(postId => {
-//         const res = await fetch(``)
-//     });
-// }
+async function createPosts(postIds) {
+    const fetchOption = {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+            Authorization: `Token ${localStorage.getItem('sedditToken')}`
+        }
+    }
+    // maping the post ids to the post jsons (GET /post)
+    let postList = await Promise.all(postIds.map(async postId => {
+        try {
+            const res = await fetch(`${API_URL}/post?id=${postId}`, fetchOption);
+            const jsonResponse = await res.json();
+            if (res.status !== 200) throw Error(jsonResponse.message);
+            return jsonResponse;
+        }
+        catch (error){
+            console.log(error);
+            return null;
+        }
+    }));
+    // creating ul element containing all posts of the user
+    let postListElement = await createPostList(postList);
+    // add edit button and remove button for each post
+    Array.from(postListElement.children).forEach(post => {
+        const postId = post.getAttribute('data-id-post');
+        // console.log(postId)
+        let contentDiv = post.getElementsByClassName('content')[0];
+        let actionDiv = createNewElement('div', {"class": "flex-right"})
+        let deleteButton = createNewElement('i', {"class": "fa fa-trash clickable action"})
+        let editButton = createNewElement('i', {"class": "fas fa-pen clickable action"})
+        
+        deleteButton.addEventListener('click', async () => {
+            // delete in backend
+            await deletePost(postId);
+            // hide element in front end
+            post.style.display = 'none';
+        })
+        editButton.addEventListener('click', () => {
+            const title = contentDiv.getElementsByClassName('post-title')[0].innerText;
+            const text = contentDiv.getElementsByClassName('post-text')[0].innerText;
+            const subseddit = contentDiv.getElementsByClassName('post-author')[0].innerText.replace(/.*r\//, "");
+            // blur background
+            let root = document.getElementById('root');
+            root.classList.add('blur');
+            // create modal and append to body
+            let modal = createPostModal(postId, title, text, subseddit);
+            let body = document.getElementsByTagName('body')[0];
+            body.setAttribute('style', 'overflow: hidden');        
+            body.appendChild(modal);
+            modal.style.display = 'block';
+        })
+        addChildrenToElement(actionDiv, editButton, deleteButton)
+        contentDiv.appendChild(actionDiv)
+    });
+
+    return postListElement;
+}
 
 async function userInfo(id) {
     const fetchOption = {
@@ -99,6 +157,23 @@ async function userInfo(id) {
             modal.style.display = 'block';
         })
         return username;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function deletePost(postId) {
+    const fetchOption = {
+        method: "DELETE",
+        headers: {
+            Accept: "application/json",
+            Authorization: `Token ${localStorage.getItem('sedditToken')}`
+        }
+    }
+    try {
+        const res = await fetch(`${API_URL}/post?id=${postId}`, fetchOption)
+        const json = await res.json();
+        if (res.status !== 200) throw Error(json.message);
     } catch (error) {
         console.log(error)
     }
