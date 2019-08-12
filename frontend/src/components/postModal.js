@@ -36,32 +36,19 @@ function createPostForm(id, title, text, subseddit) {
         e.preventDefault();
         // convert image to base64
         let image = document.getElementById('image-input')
-        let reader = new FileReader();
-        console.log(image.files[0])
+        console.log("image file: ",image.files[0])
         let data;
-        // if image is not supplied 
-        if (image.files[0] === undefined) {
-            data = {
-                "title": `${titleInput.value}`,
-                "text": `${textInput.value}`,
-                "subseddit": `${subsedditInput.value}`,
-            }
+        
+        data = {
+            "title": `${titleInput.value}`,
+            "text": `${textInput.value}`,
+            "subseddit": `${subsedditInput.value}`,
         }
-        else {
-            reader.readAsDataURL(image.files[0]);
-            // after reader finished converting to base64
-            reader.onloadend = () => {
-                let imageBase64 = reader.result;
-                // remove the data type e.g. data:image/jpeg;base64,
-                imageBase64 = imageBase64.replace(/^data.*base64,/, '')
-                data = {
-                    "title": `${titleInput.value}`,
-                    "text": `${textInput.value}`,
-                    "image": `${imageBase64}`,
-                    "subseddit": `${subsedditInput.value}`,
-                }
-            }
+        // if image is supplied 
+        if (image.files[0] !== undefined) {
+            data.image = await convertToBase64(image.files[0]);
         }
+        console.log("data before passing in function:", data)
         const status = await uploadPost(data, id);
         if (status) {
             let successMsg = createNewElement('p', {"class": "success-message"}, "Posted!");
@@ -105,4 +92,18 @@ async function uploadPost(data, id) {
         console.log(error)
         return false;
     }
+}
+function convertToBase64(image) {
+    return new Promise((resolve) => {
+        let reader = new FileReader();
+        reader.readAsDataURL(image);
+        // after reader finished converting to base64
+        reader.onloadend = async () => {
+            let imageBase64 = await reader.result;
+            console.log("base 64", imageBase64)
+            // remove the data type e.g. data:image/jpeg;base64,
+            imageBase64 = imageBase64.replace(/^data.*base64,/, '')
+            resolve(imageBase64);
+        }
+    })
 }
