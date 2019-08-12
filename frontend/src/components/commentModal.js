@@ -9,7 +9,6 @@ export default async function createCommentModal(postId) {
     while (modalConentDiv.firstChild) {
         modalConentDiv.removeChild(modalConentDiv.firstChild);
     }
-    console.log('fetching comments')
     const fetchOption = {
         method: "GET",
         headers: {

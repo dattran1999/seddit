@@ -55,7 +55,6 @@ export default async function createPostList(posts) {
         let child = createPost(post);
         postList.appendChild(child);
     });
-    console.log(state);
     return postList;
 }
 
@@ -117,10 +116,12 @@ function createVotingDiv(postId, numVotes) {
         body.appendChild(modal);
         modal.style.display = 'block';
     });
-
-    upvoteButton.addEventListener('click', () => {
-        postLike(postId, voteCount, upvoteButton)
-    })
+    // user only able to upvote if their id is valid
+    if (state.id !== null) {
+        upvoteButton.addEventListener('click', () => {
+            postLike(postId, voteCount, upvoteButton)
+        })
+    }
 
     addChildrenToElement(voteDiv, upvoteButton, voteCount, downvoteButton, commentButton);
     return voteDiv;

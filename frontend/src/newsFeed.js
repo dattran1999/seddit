@@ -17,13 +17,11 @@ export default async function renderNewsFeed(apiUrl, token) {
     try {
         const res = await fetch(fetchUrl, option);
         const json = await res.json();
-        console.log(json)
         if (res.status !== 200) throw Error(res.status)
         let postList = createNewElement('p', {}, "Your feed is empty");
         if (json.posts.length > 0) {
             postList = await createPostList(json.posts);
         }
-        console.log(postList)
         let mainContent = document.getElementsByTagName('main')[0];
         mainContent.innerText = "";
         mainContent.appendChild(postList);
@@ -33,9 +31,11 @@ export default async function renderNewsFeed(apiUrl, token) {
               console.log("Bottom of page");
             }
         };
+        return true;
     } 
     catch (error) {
-        console.log("error catched", error)
+        console.log("error catched", error);
+        renderNewsFeed(apiUrl)
     }
     // fetch(fetchUrl, option)
     //     .then(res => {

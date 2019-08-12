@@ -8,7 +8,6 @@ export default function renderLoginPage(apiUrl) {
     // create login form, with a div wrapped around it
     let loginForm = document.createElement('form');
     loginForm.classList.add("auth-form")
-    renderNavBar();
     // create input fields
     let usernameInput = createInput('text', 'username', 'Enter Username');
     let passwordInput = createInput('password', 'password', 'Enter Password');
@@ -41,15 +40,14 @@ export default function renderLoginPage(apiUrl) {
                 const token = res.token;
                 console.log(token);
                 localStorage.setItem('sedditToken', token);
-                // renderNavBar();
-                // renderNewsFeed(apiUrl, token);
-                return true;
+                renderNavBar();
+                renderNewsFeed(apiUrl, token);
             })
             .catch(res => {
                 const error = document.getElementsByClassName("error-message");
                 if (Array.from(error).length === 0) {
                     let errorMsg = createNewElement('p', {"class": 'error-message'}, res)
-                    loginForm.insertBefore(errorMsg, loginForm.childNodes[2]);
+                    loginForm.insertBefore(errorMsg, submitButton);
                 }
             })
     })

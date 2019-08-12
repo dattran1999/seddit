@@ -166,6 +166,10 @@ input:not([type=search]), button[value=Submit], textarea{
   color: red;
   font-size: var(--body-text-size)
 }
+.success-message {
+  color: green;
+  font-size: var(--body-text-size)
+}
 
 .modal {
   display: block; /*TODO:change to none*/
@@ -199,7 +203,22 @@ input:not([type=search]), button[value=Submit], textarea{
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.profile-content {
+  min-width: 500px;
+  max-width: 800px;
+  width: 80%;
+  margin: 20px auto;
+  padding: 0;
+}
+.username {
+  display: inline;
+  padding-right: 20px;
+}
+.fa-pen{
+  cursor: pointer;
+}
 
 .modal .fa-window-close {
-  float: right;
+  position: fixed;
+  right: 14%;
 }

@@ -46,7 +46,6 @@ export async function getUserId() {
     } 
     // error has occurred
     catch {
-        console.log("error in finding id");
         return null;
     }
 }
