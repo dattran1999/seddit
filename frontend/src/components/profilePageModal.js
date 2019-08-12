@@ -58,11 +58,14 @@ export default async function createProfilePageModal(username) {
         }
         addChildrenToElement(contentDiv, profileDiv, metaDiv, followButton);
         modalConentDiv.appendChild(contentDiv);
-        return modalDiv;
     } catch(error) {
         // TODO: show error message
         console.log("error catched", error)
+        let errorMsg = createNewElement('p', {"class": "error-message"}, "You need to log in to view this user")
+        modalConentDiv.appendChild(errorMsg);
     }
+    return modalDiv;
+
 }
 
 // async function createPost(postIds) {

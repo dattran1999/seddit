@@ -1,11 +1,10 @@
 import {createNewElement} from './utils.js'
 import createPostList from './components/postList.js'
 
-// global var tracking which post are we up to
-let numPost = 0;
 
 // postNum for the function is which post to start at for user feed
 export default async function renderNewsFeed(apiUrl, token, postNum) {
+    window.onscroll = undefined;
     // fetch posts
     let fetchUrl = `${apiUrl}/post/public`;
     let option = {
@@ -43,42 +42,31 @@ export default async function renderNewsFeed(apiUrl, token, postNum) {
             }        
         }
         mainContent.appendChild(postList);
-        // from https://stackoverflow.com/questions/9439725/javascript-how-to-detect-if-browser-window-is-scrolled-to-bottom
-        window.onscroll = () =>  {
-            if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight && json.posts.length > 0) {
-                console.log("numpost", json.posts.length)
-                numPost += json.posts.length;
-                console.log("Bottom of page", numPost);
-                renderNewsFeed(apiUrl, token, numPost);
-            }
-        };
+        console.log(postNum)
+        // only add infinite scroll for logged in users
+        if (token !== undefined) {
+            // from https://stackoverflow.com/questions/9439725/javascript-how-to-detect-if-browser-window-is-scrolled-to-bottom
+            window.onscroll = function handleInfiniteScroll() {
+                // console.log("scrolling", window.innerHeight ,window.scrollY,document.body.scrollHeight)
+                if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight && json.posts.length > 0) {
+                    // console.log("numpost", json.posts.length)
+                    if (postNum === undefined) {
+                        postNum = json.posts.length;
+                    }
+                    else {
+                        postNum += json.posts.length;
+                    }
+                    // console.log("Bottom of page", postNum);
+                    window.removeEventListener('onscroll', handleInfiniteScroll, false)
+                    renderNewsFeed(apiUrl, token, postNum);
+                }
+            };
+        }
         return true;
     } 
     catch (error) {
         console.log("error catched", error);
         renderNewsFeed(apiUrl)
     }
-    // fetch(fetchUrl, option)
-    //     .then(res => {
-    //         if (res.status !== 200) {
-    //             console.log("error", res.status)
-    //         }
-    //         return res.json();
-    //     })
-    //     .then(res => {
-    //         let postList = createNewElement('p', {}, "Your feed is empty");
-    //         if (res.posts.length > 0) {
-    //             postList = await createPostList(res.posts);
-    //         }
-    //         console.log(postList)
-    //         let mainContent = document.getElementsByTagName('main')[0];
-    //         mainContent.innerText = "";
-    //         mainContent.appendChild(postList);
-    //     })
-    //     // if error in fetching post, get public posts
-    //     .catch((error) => {
-    //         console.log("error catched", error)
-    //         renderNewsFeed(apiUrl)
-    //     }
-    //     )
 }
+

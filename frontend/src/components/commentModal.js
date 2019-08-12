@@ -23,7 +23,7 @@ export default async function createCommentModal(postId) {
     }
     catch (error){
         console.log(error)
-        let errorMsg = createNewElement('p', {"class": "error-message"}, "You need to log in to view likes")
+        let errorMsg = createNewElement('p', {"class": "error-message"}, "You need to log in to view comments")
         modalConentDiv.appendChild(errorMsg);
     }
     return modalDiv;

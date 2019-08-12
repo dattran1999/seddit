@@ -19,7 +19,7 @@ export default function renderLoginPage(apiUrl) {
     addChildrenToElement(loginForm, usernameInput, passwordInput, submitButton);
     mainContent.appendChild(loginForm);
 
-    submitButton.addEventListener('click', (e) => {
+    submitButton.addEventListener('click', async(e) => {
         e.preventDefault()
         const option = {
             method: "POST",
@@ -29,28 +29,24 @@ export default function renderLoginPage(apiUrl) {
                 "Content-Type": "application/json"
             },
         }
-        fetch(`${apiUrl}/auth/login`, option)
-            .then(res => {
-                console.log(res)
-                if (res.status !== 200) {
-                    throw Error('Wrong username or password')
-                }
-                return res.json();
-            })
-            .then(res => {
-                // TODO: fetch posts of the user
-                const token = res.token;
-                console.log(token);
-                localStorage.setItem('sedditToken', token);
-                renderNavBar();
-                renderNewsFeed(apiUrl, token);
-            })
-            .catch(res => {
-                const error = document.getElementsByClassName("error-message");
-                if (Array.from(error).length === 0) {
-                    let errorMsg = createNewElement('p', {"class": 'error-message'}, res)
-                    loginForm.insertBefore(errorMsg, submitButton);
-                }
-            })
+        try {
+            const res = await fetch(`${apiUrl}/auth/login`, option)
+            const json = await res.json()
+            if (res.status !== 200) {
+                throw Error('Wrong username or password')
+            }
+            const token = json.token;
+            console.log(token);
+            localStorage.setItem('sedditToken', token);
+            renderNavBar();
+            renderNewsFeed(apiUrl, token);
+        } catch (error) {
+            let errorMsg = document.getElementsByClassName("error-message")[0];
+            console.log(errorMsg)
+            if (errorMsg === undefined) {
+                errorMsg = createNewElement('p', {"class": 'error-message'}, error)
+                loginForm.insertBefore(errorMsg, submitButton);
+            }
+        }
     })
 }
