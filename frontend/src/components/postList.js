@@ -3,6 +3,8 @@ import createLikeModal from "./likeModal.js"
 import createCommentModal from "./commentModal.js"
 import createPostModal from "./postModal.js"
 import API_URL from '../backend_url.js'
+import createProfilePageModal from './profilePageModal.js'
+import renderProfilePage from '../profilePage.js';
 
 class State {
     constructor() {
@@ -19,33 +21,35 @@ class State {
 let state = new State();
 
 // TODO: maybe split this functions into files
-export default async function createPostList(posts) {
+export default async function createPostList(posts, showHeader) {
     // get id of current user and store in state
     await state.init();
 
     // ul element contains all posts + header
     let postList = createNewElement('ul', {"id": "feed", "data-id-feed": ""});
     // feed header div
-    let feedHeaderDiv = createNewElement('div', {"class": "feed-header"});
-    let feedTitle = createNewElement('h3', {'class': 'feed-title alt-text'}, "Popular posts");
-    let postButton = createNewElement('button', {"class": "button button-secondary", "id": "post-button"}, "Post");
-    if (posts.length > 0) {
-        feedTitle.innerText = "Your Posts"
-    }
-    addChildrenToElement(feedHeaderDiv, feedTitle, postButton);
-    postList.appendChild(feedHeaderDiv);
+    if (showHeader) {
+        let feedHeaderDiv = createNewElement('div', {"class": "feed-header"});
+        let feedTitle = createNewElement('h3', {'class': 'feed-title alt-text'}, "Popular posts");
+        let postButton = createNewElement('button', {"class": "button button-secondary", "id": "post-button"}, "Post");
+        if (posts.length > 0) {
+            feedTitle.innerText = "Your Posts"
+        }
+        addChildrenToElement(feedHeaderDiv, feedTitle, postButton);
+        postList.appendChild(feedHeaderDiv);
 
-    postButton.addEventListener('click', () => {
-        // blur background
-        let root = document.getElementById('root');
-        root.classList.add('blur');
-        // create modal and append to body
-        let modal = createPostModal();
-        let body = document.getElementsByTagName('body')[0];
-        body.setAttribute('style', 'overflow: hidden');        
-        body.appendChild(modal);
-        modal.style.display = 'block';
-    })
+        postButton.addEventListener('click', () => {
+            // blur background
+            let root = document.getElementById('root');
+            root.classList.add('blur');
+            // create modal and append to body
+            let modal = createPostModal();
+            let body = document.getElementsByTagName('body')[0];
+            body.setAttribute('style', 'overflow: hidden');        
+            body.appendChild(modal);
+            modal.style.display = 'block';
+        })
+    }
 
     // posts 
     posts.forEach(post => {
@@ -70,6 +74,18 @@ function createPost(postInfo) {
         {"data-id-author": `${postInfo.meta.author}`, "class": "post-author"}, 
         `Posted by @${postInfo.meta.author} in r/${postInfo.meta.subseddit}`
     );
+    // show info of author when click
+    author.addEventListener('click', async () => {
+        // blur background
+        let root = document.getElementById('root');
+        root.classList.add('blur');
+        // create modal and append to body
+        let modal = await createProfilePageModal(postInfo.meta.author)
+        let body = document.getElementsByTagName('body')[0];
+        body.setAttribute('style', 'overflow: hidden');        
+        body.appendChild(modal);
+        modal.style.display = 'block';
+    })
     let image = document.createElement('img');
     if (postInfo.thumbnail !== null) {
         image = createNewElement('img', {"src": `data:image/jpeg;base64, ${postInfo.thumbnail}`});

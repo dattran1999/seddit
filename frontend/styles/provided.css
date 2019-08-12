@@ -222,3 +222,6 @@ input:not([type=search]), button[value=Submit], textarea{
   position: fixed;
   right: 14%;
 }
+.user-meta {
+  font-weight: 300;
+}

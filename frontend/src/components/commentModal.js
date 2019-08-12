@@ -6,9 +6,6 @@ import createModal from "./baseModal.js";
 export default async function createCommentModal(postId) {
     let modalDiv = createModal('comment', postId);
     let modalConentDiv = modalDiv.getElementsByClassName("modal-content")[0];
-    while (modalConentDiv.firstChild) {
-        modalConentDiv.removeChild(modalConentDiv.firstChild);
-    }
     const fetchOption = {
         method: "GET",
         headers: {

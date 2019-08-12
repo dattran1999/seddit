@@ -4,7 +4,9 @@ import renderNavBar from './components/navbar.js'
 
 export default function renderLoginPage(apiUrl) {
     let mainContent = document.getElementsByTagName('main')[0];
-    mainContent.innerText = "";
+    while(mainContent.firstChild) {
+        mainContent.removeChild(mainContent.firstChild)
+    }
     // create login form, with a div wrapped around it
     let loginForm = document.createElement('form');
     loginForm.classList.add("auth-form")

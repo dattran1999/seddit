@@ -1,6 +1,7 @@
 import { createNewElement, getUserId } from "../utils.js";
 import renderProfilePage from '../profilePage.js';
 import renderLoginPage from "../loginPage.js";
+import renderSignupPage from "../signupPage.js"
 import API_URL from "../backend_url.js";
 import renderNewsFeed from "../newsFeed.js";
 
@@ -27,11 +28,14 @@ export default async function renderNavBar() {
             myProfileButton.addEventListener('click', renderProfilePage);
             myProfileListItem.appendChild(myProfileButton);
             navbarList.insertBefore(myProfileListItem, navbarList.childNodes[0]);
-            // Remove login button 
+            // Remove login button and signup button
             const loginButton = navbarList.querySelector(".button[data-id-login]");
             const loginButtonDiv = loginButton.parentElement;
             loginButtonDiv.removeChild(loginButton);
-            navbarList.removeChild(loginButtonDiv);
+            const signupButton = navbarList.querySelector(".button[data-id-signup]");
+            const signupButtonDiv = signupButton.parentElement;
+            signupButtonDiv.removeChild(signupButton);
+            navbarList.removeChild(signupButtonDiv);
             // add logout button 
             let logoutButtonDiv = createNewElement('li', {'class': 'nav-item', "id": "logout-button-div"});
             let logoutButton = createNewElement('button', {"class": "button button-primary", "id": "logout-button"}, "LOG OUT");
@@ -41,7 +45,7 @@ export default async function renderNavBar() {
                 renderNavBar();
                 renderNewsFeed(API_URL);
             })
-            navbarList.insertBefore(logoutButtonDiv, navbarList.childNodes[2]);
+            navbarList.appendChild(logoutButtonDiv);
         }
     }
     // not logged in
@@ -57,19 +61,31 @@ export default async function renderNavBar() {
             myProfileButtonDiv.removeChild(myProfileButtonDiv.childNodes[0]);
             navbarList.removeChild(myProfileButtonDiv);
         }
-        // create log in button if needed to
+        // create log in and sign up button if needed to
         let loginButton = navbarList.querySelector(".button[data-id-login]");
         if (loginButton === null) {
-            let loginButtonDiv = createLoginButtonDiv();
-            navbarList.insertBefore(loginButtonDiv, navbarList.childNodes[2])
+            let loginButtonDiv = createLoginButtonDiv('login');
+            navbarList.appendChild(loginButtonDiv)
+
+        }
+        let signupButton = navbarList.querySelector(".button[data-id-signup]");
+        if (signupButton === null) {
+            let signupButtonDiv = createLoginButtonDiv("signup");
+            navbarList.appendChild(signupButtonDiv)
         }
     }
     return navbar;
 }
-function createLoginButtonDiv() {
+function createLoginButtonDiv(type) {
     let loginButtonDiv = createNewElement('div', {"class": "nav-item"});
-    let loginButton = createNewElement('button', {"class":"button button-primary", "data-id-login": ""}, "LOGIN");
-    loginButton.addEventListener('click', () => renderLoginPage(API_URL));
+    let loginButton;
+    if (type === 'login') {
+        loginButton = createNewElement('button', {"class":"button button-primary", "data-id-login": ""}, "LOGIN");
+        loginButton.addEventListener('click', () => renderLoginPage(API_URL));
+    } else if (type === 'signup') {
+        loginButton = createNewElement('button', {"class":"button button-secondary", "data-id-signup": ""}, "SIGN UP");
+        loginButton.addEventListener('click', () => renderSignupPage(API_URL));
+    }
     loginButtonDiv.appendChild(loginButton);
     return loginButtonDiv;
 }

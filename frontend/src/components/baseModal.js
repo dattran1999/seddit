@@ -10,10 +10,19 @@ export default function createModal(type, postId) {
         modalDiv = document.querySelector(`.modal[data-comment-modal-id="${postId}"]`);
     } else if (type === 'like') {
         modalDiv = document.querySelector(`.modal[data-like-modal-id="${postId}"]`);
+    } else if (type === 'profile') {
+        modalDiv = document.querySelector(`.modal[data-profile-modal-id="${postId}"]`);
     }
     // if the modal is not yet created
     if (modalDiv === undefined || modalDiv === null) {
         modalDiv = createNewModal(type, postId)
+    // otherwise...
+    } else {
+        let modalConentDiv = modalDiv.getElementsByClassName("modal-content")[0];
+        // clear out content of the modal
+        while (modalConentDiv.firstChild) {
+            modalConentDiv.removeChild(modalConentDiv.firstChild);
+        }
     }
     return modalDiv;
 }
@@ -26,6 +35,8 @@ function createNewModal(type, postId) {
             modalDiv.setAttribute("data-comment-modal-id", postId);
         } else if (type === 'post') {
             modalDiv.setAttribute("data-post", "")
+        } else if (type === 'profile') {
+            modalDiv.setAttribute("data-profile-modal-id", postId);
         }
         let closeButton = createNewElement('i', {"class": "fa fa-window-close"});
         modalDiv.appendChild(closeButton);

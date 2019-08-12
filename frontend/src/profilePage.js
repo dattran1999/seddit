@@ -20,7 +20,9 @@ export default async function renderProfilePage() {
         }
         // clear out page
         let mainContent = document.getElementsByTagName('main')[0];
-        mainContent.innerText = "";
+        while(mainContent.firstChild) {
+            mainContent.removeChild(mainContent.firstChild)
+        }
         // add elements to page
         let contentDiv = createNewElement('div', {"class": "profile-content"})
         let profileDiv = createNewElement('div', {"class": "profile"});

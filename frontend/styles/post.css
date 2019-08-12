@@ -26,6 +26,7 @@
   margin: 5px 0;
   font-size: 12px;
   color: var(--reddit-blue);
+  cursor: pointer;
 }
 
 .vote-button {

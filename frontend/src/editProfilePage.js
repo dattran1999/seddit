@@ -3,8 +3,9 @@ import API_URL from "./backend_url.js"
 
 export default async function renderEditProfilePage() {
     let mainContent = document.getElementsByTagName('main')[0];
-    mainContent.innerText = "";
-    
+    while(mainContent.firstChild) {
+        mainContent.removeChild(mainContent.firstChild)
+    }    
     let form = createNewElement('form', {"class": "post-form"})
     
     let emailInput = createInput("text", "email", "Enter new email");
