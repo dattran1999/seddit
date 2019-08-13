@@ -43,12 +43,13 @@ function initApp(apiUrl) {
 function createTemplateHtml() {
     const root = document.getElementById('root');
     let header = document.getElementById('nav');
-    console.log(header)
     if (header === null) {
         root.appendChild(createHeaderHtml());
+    } else {
+        root.removeChild(header);
+        root.insertBefore(createHeaderHtml(), root.childNodes[0]);
     }
     let main = document.getElementsByTagName('main')[0];
-    console.log(main)
     if (main === undefined) {
         main = createNewElement('main', {"role": 'main'})
         root.appendChild(main);
@@ -60,8 +61,10 @@ function createHeaderHtml() {
     let logo = createNewElement('h1', {"id": "logo", "class": "flex-center"}, "Seddit")
     let navbar = createNewElement('ul', {'class': 'nav'})
     let navItem0 = createNewElement('li', {'class': 'nav-item'})
+    let searchForm = createNewElement('form', {"id": "search-form"});
     let searchBar = createNewElement('input', {'id': "search", 'data-id-search': "", "placeholder": "Search Seddit", "type": "search"})
-    navItem0.appendChild(searchBar)
+    searchForm.appendChild(searchBar)
+    navItem0.appendChild(searchForm)
     let navItem1 = createNewElement('li', {'class': 'nav-item'})
     let loginButton = createNewElement('button', {"class":"button button-primary", "data-id-login": ""}, "LOGIN");
     navItem1.appendChild(loginButton)

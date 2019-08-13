@@ -4,6 +4,7 @@ import renderLoginPage from "../loginPage.js";
 import renderSignupPage from "../signupPage.js"
 import API_URL from "../backend_url.js";
 import renderNewsFeed from "../newsFeed.js";
+import renderFilteredNewsFeed from '../filteredNewsFeed.js'
 
 export default async function renderNavBar() {    
     let navbar = document.getElementById('nav');
@@ -14,11 +15,11 @@ export default async function renderNavBar() {
     else {
         return;
     }
-    // TODO: create the whole nav bar from scratch
     // check if the token is valid by get the user id (GET /user)
     const userId = await getUserId();
     // if logged in
     if (userId !== null) {
+        // create the whole nav bar from scratch
         // see if my profile button is there
         let myProfileButton = document.getElementById("my-profile-button");
         // create my profile button 
@@ -46,6 +47,15 @@ export default async function renderNavBar() {
                 renderNewsFeed(API_URL);
             })
             navbarList.appendChild(logoutButtonDiv);
+        }
+        // add event listener for search form
+        let searchForm = document.getElementById("search-form")
+        console.log(searchForm)
+        searchForm.onsubmit = (e) => {
+            e.preventDefault()
+            let query = document.getElementById('search').value;
+            console.log(query)
+            renderFilteredNewsFeed(query)
         }
     }
     // not logged in
@@ -76,6 +86,7 @@ export default async function renderNavBar() {
     }
     return navbar;
 }
+// create log in or signup button
 function createLoginButtonDiv(type) {
     let loginButtonDiv = createNewElement('div', {"class": "nav-item"});
     let loginButton;

@@ -236,3 +236,7 @@ input:not([type=search]), button[value=Submit], textarea{
   float: right;
   right: 0%;
 }
+
+#search-form {
+  display: inline;
+}

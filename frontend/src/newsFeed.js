@@ -16,10 +16,12 @@ export default async function renderNewsFeed(apiUrl, token, postNum) {
             Authorization: `Token: ${token}`
         }
         fetchUrl = `${apiUrl}/user/feed`
+        // if the number of post we want to fetch is declared
         if (postNum !== undefined && postNum !== null) {
             fetchUrl = `${apiUrl}/user/feed?p=${postNum}`
         }
     }
+    // otherwise, fetch 10 posts (default of GET /user/feed)
     try {
         const res = await fetch(fetchUrl, option);
         const json = await res.json();
