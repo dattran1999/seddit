@@ -14,3 +14,5 @@
 2019-08-12     15:15   16:45   Testing: Set up for autotest. Added posts in profile page
 2019-08-12     17:00   18:45   Fix bugs: fix bug in posting post (image was mandatory before). Allow users to modify their post
 2019-08-13     10:30   11:45   Coding: User is able to search for posts
+
+Total Hours: 27:40:00
