@@ -1,2 +1,16 @@
-25/07/19     18:00   18:15   put the first real entry in diary.txt (delete this line!)
-
+2019-07-29     12:00   13:00   Reading: Reading assignment specs + docs of backend
+2019-07-30     12:00   14:00   Coding: Finished creating login form + eventlistener for nav bar
+2019-07-30     18:30   19:00   Coding: Splitting files up for rendering login and signup pages. Touch on css of the login page
+2019-07-30     20:00   23:00   Coding: Login verification with backend works. Able to fetch public posts and display them.
+2019-07-31     20:15   22:40   Research + Coding: Added modal showing who liked a post
+2019-08-01     15:00   15:30   Coding: Added modal for comments. Added images to posts
+2019-08-03     11:15   14:00   Coding: Built comments for newsfeed and user able to vote and delete vote
+2019-08-03     16:00   19:00   Coding: Organise code (put them in folders). Reading about converting image to base64 and completed posting post.
+2019-08-05     10:30   12:00   Coding: Users able to see their own newsfeed. Reading about implementation of infinite scroll
+2019-08-08     15:30   16:30   Coding: User is able to comment
+2019-08-09     16:00   18:00   Coding: Update navbar when logged in and when log out. User is able to edit their profile
+2019-08-12     10:30   12:30   Coding: coded infinite scroll. User is able to click and view another user info. Refactored code
+2019-08-12     12:30   14:00   Debug: Debug a problem with infinite scroll (event listener still listening after changing page). Added list of following for profile page
+2019-08-12     15:15   16:45   Testing: Set up for autotest. Added posts in profile page
+2019-08-12     17:00   18:45   Fix bugs: fix bug in posting post (image was mandatory before). Allow users to modify their post
+2019-08-13     10:30   11:45   Coding: User is able to search for posts
