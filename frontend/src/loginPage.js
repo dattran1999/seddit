@@ -36,13 +36,11 @@ export default function renderLoginPage(apiUrl) {
                 throw Error('Wrong username or password')
             }
             const token = json.token;
-            console.log(token);
             localStorage.setItem('sedditToken', token);
             renderNavBar();
             renderNewsFeed(apiUrl, token);
         } catch (error) {
             let errorMsg = document.getElementsByClassName("error-message")[0];
-            console.log(errorMsg)
             if (errorMsg === undefined) {
                 errorMsg = createNewElement('p', {"class": 'error-message'}, error)
                 loginForm.insertBefore(errorMsg, submitButton);

@@ -16,7 +16,6 @@ export default async function renderFilteredNewsFeed(query) {
     // posts is a list of posts containing the query
     const posts = await getPosts(queryRegex, fetchOption)
     const postList = await createPostList(posts, true)
-    console.log(postList)
     let mainContent = document.getElementsByTagName('main')[0]
     // clear out page
     while(mainContent.firstChild) {
@@ -41,7 +40,6 @@ async function getPosts(queryRegex, fetchOption, startPostNum) {
     try {
         const res = await fetch(fetchUrl, fetchOption);
         const json = await res.json();
-        console.log(json)
         if (res.status !== 200) throw Error(res.status)
 
         // get posts the json resp have posts in it

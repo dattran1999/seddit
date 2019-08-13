@@ -4,7 +4,6 @@ import createModal from "./baseModal.js"
 // import createPostList from './components/postList.js'
 
 export default async function createProfilePageModal(username) {
-    console.log(username)
     const name = username;
     let modalDiv = createModal('profile', username);
     let modalConentDiv = modalDiv.getElementsByClassName("modal-content")[0];
@@ -34,8 +33,6 @@ export default async function createProfilePageModal(username) {
         let numFollowing = createNewElement('p', {}, `${json.following.length} following`);
         let numFollowed = createNewElement('p', {}, `${json.followed_num} follwers`);
         addChildrenToElement(metaDiv, numPost, numFollowed, numFollowing);
-        // TODO: maybe add the posts of user (use the function createPost in postList.js)
-        // let posts = await createPosts(json.posts);
         
         // track if user has follow the person or not first
         const isFollowing = await isUserFollowing(json.id, fetchOption);
@@ -88,7 +85,6 @@ async function isUserFollowing(userId, fetchOption) {
     }
 }
 async function followUser(username, action) {
-    console.log(`${action} ${username}`)
     const fetchOption = {
         method: "PUT",
         headers: {
@@ -100,7 +96,6 @@ async function followUser(username, action) {
         const res = await fetch(`${API_URL}/user/${action}/?username=${username}`, fetchOption);
         const json = await res.json();
         if (res.status !== 200) throw Error(json.message)
-        console.log(json.message)
     } catch (error) {
         console.log("error catched", error)
     }

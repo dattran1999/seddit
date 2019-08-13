@@ -156,12 +156,10 @@ async function postLike(postId, voteCountElement, upvoteButton) {
         fetchOption.method = "PUT";
         voteCountElement.innerText = Number(voteCountElement.innerText) + 1;
         upvoteButton.classList.add('liked');
-        console.log("like");    
     } else {
         fetchOption.method = "DELETE";
         voteCountElement.innerText = Number(voteCountElement.innerText) - 1;
         upvoteButton.classList.remove('liked');
-        console.log("delete");
     }
     state.userLiked[`${postId}`] = !state.userLiked[`${postId}`];
     try {
@@ -170,7 +168,6 @@ async function postLike(postId, voteCountElement, upvoteButton) {
             throw Error();
         }
         const json = await response.json();
-        console.log(json);
     }
     catch (error) {
         // TODO: showing error message...

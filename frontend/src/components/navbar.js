@@ -50,11 +50,9 @@ export default async function renderNavBar() {
         }
         // add event listener for search form
         let searchForm = document.getElementById("search-form")
-        console.log(searchForm)
         searchForm.onsubmit = (e) => {
             e.preventDefault()
             let query = document.getElementById('search').value;
-            console.log(query)
             renderFilteredNewsFeed(query)
         }
     }

@@ -36,7 +36,6 @@ function createPostForm(id, title, text, subseddit) {
         e.preventDefault();
         // convert image to base64
         let image = document.getElementById('image-input')
-        console.log("image file: ",image.files[0])
         let data;
         
         data = {
@@ -48,7 +47,6 @@ function createPostForm(id, title, text, subseddit) {
         if (image.files[0] !== undefined) {
             data.image = await convertToBase64(image.files[0]);
         }
-        console.log("data before passing in function:", data)
         const status = await uploadPost(data, id);
         if (status) {
             let successMsg = createNewElement('p', {"class": "success-message"}, "Posted!");
@@ -75,7 +73,6 @@ async function uploadPost(data, id) {
             Authorization: `Token ${localStorage.getItem('sedditToken')}`
         },
     }
-    console.log(fetchOption.body)
     let fetchUrl = `${API_URL}/post`;
     if (id !== undefined) {
         fetchOption.method = "PUT";
@@ -85,7 +82,6 @@ async function uploadPost(data, id) {
         const res = await fetch(fetchUrl, fetchOption);
         const json = await res.json();
         if (res.status !== 200) throw Error(json.message);
-        console.log(json)
         return true;
     } catch(error) {
         // TODO: show error message
@@ -100,7 +96,6 @@ function convertToBase64(image) {
         // after reader finished converting to base64
         reader.onloadend = async () => {
             let imageBase64 = await reader.result;
-            console.log("base 64", imageBase64)
             // remove the data type e.g. data:image/jpeg;base64,
             imageBase64 = imageBase64.replace(/^data.*base64,/, '')
             resolve(imageBase64);

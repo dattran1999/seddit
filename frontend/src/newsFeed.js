@@ -25,7 +25,6 @@ export default async function renderNewsFeed(apiUrl, token, postNum) {
     try {
         const res = await fetch(fetchUrl, option);
         const json = await res.json();
-        console.log(json)
         if (res.status !== 200) throw Error(res.status)
         let postList = createNewElement('p', {"class": "flex-center"}, "Your feed is empty");
         // get posts the json resp have posts in it

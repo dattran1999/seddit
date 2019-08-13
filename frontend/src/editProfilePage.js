@@ -29,12 +29,10 @@ export default async function renderEditProfilePage() {
                 Authorization: `Token ${localStorage.getItem('sedditToken')}`
             },
         }
-        console.log(fetchOption)
         try {
             const res = await fetch(`${API_URL}/user`, fetchOption);
             const json = await res.json();
             if (res.status !== 200) throw Error(json.message);
-            console.log(json)
             // get success message. if none then create one
             let successMessages = document.getElementsByClassName("success-message");
             if (Array.from(successMessages).length === 0) {

@@ -54,7 +54,6 @@ function createCommentForm(postId) {
 
     submitButton.addEventListener('click', async (e) => {
         e.preventDefault();
-        console.log(commentInput.value)
         const fetchOption = {
             method: "PUT",
             headers: {
