@@ -43,7 +43,6 @@ export default async function renderNewsFeed(apiUrl, token, postNum) {
             }        
         }
         mainContent.appendChild(postList);
-        console.log(postNum)
         // only add infinite scroll for logged in users
         if (token !== undefined) {
             // from https://stackoverflow.com/questions/9439725/javascript-how-to-detect-if-browser-window-is-scrolled-to-bottom
